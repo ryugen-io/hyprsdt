@@ -3,6 +3,11 @@
 default:
     @just --list
 
+# === Install ===
+
+install:
+    @./install.sh
+
 # === Build ===
 
 build *args:
