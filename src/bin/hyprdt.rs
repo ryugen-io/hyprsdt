@@ -1,8 +1,8 @@
 //! hyprdt CLI - Debug terminal server
 
 use clap::Parser;
-use hyprdt::socket::Level;
-use hyprdt::{Server, socket::default_socket_path};
+use hyprdt::Server;
+use hyprdt::socket::{Level, default_socket_path};
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -33,6 +33,7 @@ fn main() {
     let args = Args::parse();
 
     let socket_path = args.socket.unwrap_or_else(default_socket_path);
+    let cleanup_path = socket_path.clone();
 
     let min_level = args.level.map(|l| Level::parse(&l));
 
@@ -45,27 +46,14 @@ fn main() {
 
     let server = Server::with_config(config);
 
-    // Handle Ctrl+C
-    let running = std::sync::Arc::new(std::sync::atomic::AtomicBool::new(true));
-    let r = running.clone();
-    ctrlc_handler(move || {
-        r.store(false, std::sync::atomic::Ordering::SeqCst);
+    // Handle Ctrl+C - clean up socket before exit
+    let _ = ctrlc::set_handler(move || {
+        let _ = std::fs::remove_file(&cleanup_path);
+        std::process::exit(0);
     });
 
     if let Err(e) = server.run() {
         eprintln!("Server error: {}", e);
         std::process::exit(1);
     }
-}
-
-fn ctrlc_handler<F: FnOnce() + Send + 'static>(handler: F) {
-    let handler = std::sync::Mutex::new(Some(handler));
-    let _ = ctrlc::set_handler(move || {
-        if let Ok(mut guard) = handler.lock() {
-            if let Some(h) = guard.take() {
-                h();
-            }
-        }
-        std::process::exit(0);
-    });
 }
