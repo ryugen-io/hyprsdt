@@ -1,6 +1,6 @@
 //! Client-side tracing layer for sending logs to hyprdt
 
-use crate::socket::{Level, Message, default_socket_path};
+use crate::socket::{Level, Message, socket_path_for};
 use std::io::Write;
 use std::os::unix::net::UnixStream;
 use std::path::Path;
@@ -9,24 +9,16 @@ use tracing::Subscriber;
 use tracing_subscriber::Layer;
 
 /// A tracing Layer that sends events to a hyprdt server
-///
-/// # Example
-/// ```rust,ignore
-/// use hyprdt::HyprdtLayer;
-/// use tracing_subscriber::prelude::*;
-///
-/// let layer = HyprdtLayer::new("myapp");
-/// tracing_subscriber::registry().with(layer).init();
-/// ```
 pub struct HyprdtLayer {
     app_name: String,
     socket: Mutex<Option<UnixStream>>,
 }
 
 impl HyprdtLayer {
-    /// Create a new layer with the given app name, connecting to default socket
+    /// Create a new layer for the given app name
     pub fn new(app_name: &str) -> Self {
-        Self::with_socket(app_name, &default_socket_path())
+        let socket_path = socket_path_for(app_name);
+        Self::with_socket(app_name, &socket_path)
     }
 
     /// Create a new layer with a custom socket path
@@ -48,7 +40,8 @@ impl HyprdtLayer {
 
     /// Try to reconnect to the server
     pub fn reconnect(&self) {
-        self.reconnect_to(&default_socket_path());
+        let socket_path = socket_path_for(&self.app_name);
+        self.reconnect_to(&socket_path);
     }
 
     /// Try to reconnect to a specific socket path
@@ -63,7 +56,6 @@ impl HyprdtLayer {
             if let Some(stream) = guard.as_mut() {
                 let wire = msg.to_wire();
                 if stream.write_all(wire.as_bytes()).is_err() {
-                    // Connection lost, clear it
                     *guard = None;
                 }
             }
@@ -83,7 +75,6 @@ where
         let metadata = event.metadata();
         let level = Level::from_tracing(metadata.level());
 
-        // Extract message and scope from event fields
         struct MessageVisitor {
             message: String,
             scope: Option<String>,
@@ -93,7 +84,6 @@ where
             fn record_debug(&mut self, field: &tracing::field::Field, value: &dyn std::fmt::Debug) {
                 if field.name() == "message" {
                     self.message = format!("{:?}", value);
-                    // Remove surrounding quotes if present
                     if self.message.starts_with('"') && self.message.ends_with('"') {
                         self.message = self.message[1..self.message.len() - 1].to_string();
                     }

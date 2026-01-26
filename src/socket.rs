@@ -3,12 +3,12 @@
 use std::env;
 use std::path::PathBuf;
 
-/// Default socket path in XDG_RUNTIME_DIR
-pub fn default_socket_path() -> PathBuf {
+/// Socket path for a specific app
+pub fn socket_path_for(app: &str) -> PathBuf {
     let runtime_dir = env::var("XDG_RUNTIME_DIR")
         .map(PathBuf::from)
         .unwrap_or_else(|_| env::temp_dir());
-    runtime_dir.join("hyprdt.sock")
+    runtime_dir.join(format!("hyprdt-{}.sock", app))
 }
 
 /// Message format sent over the socket
@@ -22,7 +22,6 @@ pub struct Message {
 }
 
 impl Message {
-    /// Create a new message
     pub fn new(app: &str, level: Level, message: &str) -> Self {
         Self {
             app: app.to_string(),
@@ -33,13 +32,12 @@ impl Message {
         }
     }
 
-    /// Set the scope
     pub fn with_scope(mut self, scope: &str) -> Self {
         self.scope = Some(scope.to_string());
         self
     }
 
-    /// Serialize to wire format (simple text protocol)
+    /// Serialize to wire format
     pub fn to_wire(&self) -> String {
         let scope_part = self
             .scope
@@ -63,7 +61,7 @@ impl Message {
             return None;
         }
 
-        let timestamp = chrono::Local::now(); // Fallback, could parse if needed
+        let timestamp = chrono::Local::now();
         let app = parts[1].to_string();
         let level = Level::parse(parts[2]);
         let scope = if parts[3].is_empty() {
@@ -83,7 +81,6 @@ impl Message {
     }
 }
 
-/// Log level
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Level {
     Error,
