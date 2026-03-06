@@ -80,11 +80,11 @@ impl Server {
         }
 
         if self.config.no_color {
-            println!("hyprdt [{}]", self.config.app_name);
+            println!("hyprsdt [{}]", self.config.app_name);
         } else {
             println!(
                 "{} [{}]",
-                "hyprdt".bold().underline(),
+                "hyprsdt".bold().underline(),
                 self.config.app_name.cyan()
             );
         }

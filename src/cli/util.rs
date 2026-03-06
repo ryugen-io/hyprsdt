@@ -5,13 +5,13 @@ use std::process::{Command, Stdio};
 
 use super::server::ServerArgs;
 
-/// Spawn hyprdt in a new terminal window
+/// Spawn hyprsdt in a new terminal window
 #[allow(clippy::zombie_processes)] // Intentional: parent exits, terminal gets reparented to init
 pub fn spawn_in_terminal(args: &ServerArgs) {
     let term =
         find_terminal().expect("[ERROR] No terminal found. Run with --here or set $TERMINAL");
 
-    let exe = std::env::current_exe().unwrap_or_else(|_| PathBuf::from("hyprdt"));
+    let exe = std::env::current_exe().unwrap_or_else(|_| PathBuf::from("hyprsdt"));
     let cmd_args = build_respawn_args(args);
 
     Command::new(&term)

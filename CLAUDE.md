@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-hyprdt (hypr debug terminal) is a real-time log viewer for the hypr* ecosystem. It provides:
+hyprsdt (hypr debug terminal) is a real-time log viewer for the hypr* ecosystem. It provides:
 - A Unix socket-based server that receives and displays logs
-- A tracing Layer for Rust applications to send logs to hyprdt
+- A tracing Layer for Rust applications to send logs to hyprsdt
 
 ## Build Commands
 
@@ -23,14 +23,14 @@ just run-filter APP # Start server with app filter
 
 ### Single Crate Structure
 ```
-hyprdt/
+hyprsdt/
 ├── src/
 │   ├── lib.rs          # Library root, re-exports
 │   ├── socket.rs       # Message format, socket path
 │   ├── client.rs       # HyprdtLayer (tracing Layer)
 │   ├── server.rs       # Server implementation
 │   └── bin/
-│       └── hyprdt.rs   # CLI binary
+│       └── hyprsdt.rs   # CLI binary
 ```
 
 ### Features
@@ -52,22 +52,22 @@ TIMESTAMP|APP|LEVEL|[SCOPE]|MESSAGE\n
 
 Example:
 ```
-14:30:45.123|hyprink|INFO|[APPLY]|applying template
+14:30:45.123|hyprsink|INFO|[APPLY]|applying template
 ```
 
 ## Usage
 
 ### Server (CLI)
 ```bash
-hyprdt                    # Start with default socket
-hyprdt --app hyprink      # Filter to hyprink only
-hyprdt --level warn       # Only warn and error
-hyprdt --no-timestamps    # Hide timestamps
+hyprsdt                    # Start with default socket
+hyprsdt --app hyprsink      # Filter to hyprsink only
+hyprsdt --level warn       # Only warn and error
+hyprsdt --no-timestamps    # Hide timestamps
 ```
 
 ### Client (Library)
 ```rust
-use hyprdt::HyprdtLayer;
+use hyprsdt::HyprdtLayer;
 use tracing_subscriber::prelude::*;
 
 let layer = HyprdtLayer::new("myapp");

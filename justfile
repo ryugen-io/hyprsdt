@@ -11,65 +11,65 @@ install:
 # === Build ===
 
 build *args:
-    @./dev/scripts/build/build.sh --release {{args}}
+    @~/code/.dev/scripts/shared/build/build.sh --release {{args}}
 
 build-debug *args:
-    @./dev/scripts/build/build.sh {{args}}
+    @~/code/.dev/scripts/shared/build/build.sh {{args}}
 
 clean *args:
-    @./dev/scripts/build/clean.sh {{args}}
+    @~/code/.dev/scripts/shared/build/clean.sh {{args}}
 
 size:
-    @./dev/scripts/build/size.sh
+    @~/code/.dev/scripts/shared/build/size.sh
 
 bloat *args:
-    @./dev/scripts/build/bloat.sh {{args}}
+    @~/code/.dev/scripts/shared/build/bloat.sh {{args}}
 
 # === Code Quality ===
 
 fmt *args:
-    @./dev/scripts/code/fmt.sh {{args}}
+    @~/code/.dev/scripts/shared/code/fmt.sh {{args}}
 
 lint *args:
-    @./dev/scripts/code/lint.sh {{args}}
+    @~/code/.dev/scripts/shared/code/lint.sh {{args}}
 
 todo:
-    @./dev/scripts/code/todo.sh
+    @~/code/.dev/scripts/shared/code/todo.sh
 
 # === Dependencies ===
 
 audit:
-    @./dev/scripts/deps/audit.sh
+    @~/code/.dev/scripts/shared/deps/audit.sh
 
 outdated:
-    @./dev/scripts/deps/outdated.sh
+    @~/code/.dev/scripts/shared/deps/outdated.sh
 
 # === Testing ===
 
 test:
-    @./dev/scripts/test/quick.sh
+    @~/code/.dev/scripts/shared/test/quick.sh
 
 coverage:
-    @./dev/scripts/test/coverage.sh
+    @~/code/.dev/scripts/shared/test/coverage.sh
 
 # === Git ===
 
 changes *args:
-    @./dev/scripts/git/changes.sh {{args}}
+    @~/code/.dev/scripts/shared/git/changes.sh {{args}}
 
 pre-commit:
-    @./dev/scripts/git/pre-commit.sh
+    @~/code/.dev/scripts/shared/git/pre-commit.sh
 
 # === Info ===
 
 tree:
-    @./dev/scripts/info/tree.sh
+    @~/code/.dev/scripts/shared/info/tree.sh
 
 loc:
-    @./dev/scripts/info/loc.sh
+    @~/code/.dev/scripts/shared/info/loc.sh
 
 docs *args:
-    @./dev/scripts/info/docs.sh {{args}}
+    @~/code/.dev/scripts/shared/info/docs.sh {{args}}
 
 # === Run ===
 

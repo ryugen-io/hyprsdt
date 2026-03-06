@@ -1,7 +1,7 @@
-//! hyprdt CLI entry point
+//! hyprsdt CLI entry point
 
 use clap::Parser;
-use hyprdt::cli::Cli;
+use hyprsdt::cli::Cli;
 
 fn main() {
     Cli::parse().run();

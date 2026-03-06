@@ -1,4 +1,4 @@
-//! Client-side tracing layer for sending logs to hyprdt
+//! Client-side tracing layer for sending logs to hyprsdt
 
 use crate::socket::{Level, Message, socket_path_for};
 use std::io::Write;
@@ -8,7 +8,7 @@ use std::sync::Mutex;
 use tracing::Subscriber;
 use tracing_subscriber::Layer;
 
-/// A tracing Layer that sends events to a hyprdt server
+/// A tracing Layer that sends events to a hyprsdt server
 pub struct HyprdtLayer {
     app_name: String,
     socket: Mutex<Option<UnixStream>>,
@@ -30,7 +30,7 @@ impl HyprdtLayer {
         }
     }
 
-    /// Check if connected to hyprdt server
+    /// Check if connected to hyprsdt server
     pub fn is_connected(&self) -> bool {
         self.socket
             .lock()

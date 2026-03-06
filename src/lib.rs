@@ -1,12 +1,12 @@
-//! hyprdt - Debug terminal for the hypr* ecosystem
+//! hyprsdt - Debug terminal for the hypr* ecosystem
 //!
-//! Each app gets its own socket: `hyprdt-{app}.sock`
+//! Each app gets its own socket: `hyprsdt-{app}.sock`
 //!
 //! # Usage
 //!
 //! ## As a library (client)
 //! ```rust,ignore
-//! use hyprdt::HyprdtLayer;
+//! use hyprsdt::HyprdtLayer;
 //! use tracing_subscriber::prelude::*;
 //!
 //! let layer = HyprdtLayer::new("myapp");
@@ -17,8 +17,8 @@
 //!
 //! ## As a server (CLI)
 //! ```bash
-//! hyprdt server myapp   # Start server for myapp
-//! hyprdt ping myapp     # Check if running
+//! hyprsdt server myapp   # Start server for myapp
+//! hyprsdt ping myapp     # Check if running
 //! ```
 
 pub mod client;

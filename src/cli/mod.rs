@@ -1,4 +1,4 @@
-//! CLI module for hyprdt
+//! CLI module for hyprsdt
 
 mod send;
 mod server;
@@ -7,7 +7,7 @@ mod util;
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
-#[command(name = "hyprdt", version, about = "hyprdt")]
+#[command(name = "hyprsdt", version, about = "hyprsdt")]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Commands,
@@ -75,7 +75,7 @@ fn run_status(app: &str) {
 
     let socket_path = socket_path_for(app);
 
-    println!("hyprdt status [{}]", app);
+    println!("hyprsdt status [{}]", app);
     println!("  Socket: {:?}", socket_path);
 
     if socket_path.exists() {

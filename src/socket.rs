@@ -8,7 +8,7 @@ pub fn socket_path_for(app: &str) -> PathBuf {
     let runtime_dir = env::var("XDG_RUNTIME_DIR")
         .map(PathBuf::from)
         .unwrap_or_else(|_| env::temp_dir());
-    runtime_dir.join(format!("hyprdt-{}.sock", app))
+    runtime_dir.join(format!("hyprsdt-{}.sock", app))
 }
 
 /// Message format sent over the socket

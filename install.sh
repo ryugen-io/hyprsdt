@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2155
 # =============================================================================
-# hyprdt Install Script
-# Builds and installs the hyprdt debug terminal CLI
+# hyprsdt Install Script
+# Builds and installs the hyprsdt debug terminal CLI
 #
 # Usage:
 #   From source (in repo):  ./install.sh
 #   From release package:   ./install.sh
-#   Remote install:         curl -fsSL https://raw.githubusercontent.com/ryugen-io/hyprdt/main/install.sh | bash
+#   Remote install:         curl -fsSL https://raw.githubusercontent.com/ryugen-io/hyprsdt/main/install.sh | bash
 #   Specific version:       curl -fsSL ... | bash -s -- v0.1.0
 #
 # Installs:
-#   CLI:    ~/.local/bin/hypr/hyprdt
+#   CLI:    ~/.local/bin/hyprs/hyprsdt
 # =============================================================================
 
 set -euo pipefail
@@ -23,10 +23,10 @@ shopt -s inherit_errexit 2>/dev/null || true
 # Configuration
 # -----------------------------------------------------------------------------
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
-readonly INSTALL_DIR="${HOME}/.local/bin/hypr"
+readonly INSTALL_DIR="${HOME}/.local/bin/hyprs"
 
 # GitHub Release Settings
-readonly REPO="ryugen-io/hyprdt"
+readonly REPO="ryugen-io/hyprsdt"
 readonly GITHUB_API="https://api.github.com/repos/${REPO}/releases"
 
 # Installation mode: "source", "package", or "remote"
@@ -58,7 +58,7 @@ else
     warn()    { echo -e "${YELLOW}[warn]${NC} INSTALL  $*" >&2; }
     error()   { echo -e "${RED}[error]${NC} INSTALL  $*" >&2; }
     die()     { error "$*"; exit 1; }
-    header()  { echo -e "${PURPLE}[hyprdt]${NC} INSTALL  $*"; }
+    header()  { echo -e "${PURPLE}[hyprsdt]${NC} INSTALL  $*"; }
 fi
 
 # -----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ detect_arch() {
 detect_install_mode() {
     if [[ -n "$SCRIPT_DIR" && -f "${SCRIPT_DIR}/Cargo.toml" ]]; then
         INSTALL_MODE="source"
-    elif [[ -n "$SCRIPT_DIR" && -d "${SCRIPT_DIR}/bin" && -f "${SCRIPT_DIR}/bin/hyprdt" ]]; then
+    elif [[ -n "$SCRIPT_DIR" && -d "${SCRIPT_DIR}/bin" && -f "${SCRIPT_DIR}/bin/hyprsdt" ]]; then
         INSTALL_MODE="package"
     else
         INSTALL_MODE="remote"
@@ -113,23 +113,23 @@ get_latest_release() {
 download_release() {
     local version="$1"
     local arch="$2"
-    local url="https://github.com/${REPO}/releases/download/${version}/hyprdt-${version}-${arch}.tar.gz"
+    local url="https://github.com/${REPO}/releases/download/${version}/hyprsdt-${version}-${arch}.tar.gz"
     local tmp_dir
     tmp_dir="$(mktemp -d)"
 
     log "Downloading ${url}..."
 
     if command_exists curl; then
-        curl -fsSL "$url" -o "${tmp_dir}/hyprdt.tar.gz" || die "Download failed"
+        curl -fsSL "$url" -o "${tmp_dir}/hyprsdt.tar.gz" || die "Download failed"
     elif command_exists wget; then
-        wget -q "$url" -O "${tmp_dir}/hyprdt.tar.gz" || die "Download failed"
+        wget -q "$url" -O "${tmp_dir}/hyprsdt.tar.gz" || die "Download failed"
     fi
 
     log "Extracting..."
-    tar -xzf "${tmp_dir}/hyprdt.tar.gz" -C "$tmp_dir"
+    tar -xzf "${tmp_dir}/hyprsdt.tar.gz" -C "$tmp_dir"
 
     local pkg_dir
-    pkg_dir="$(find "$tmp_dir" -maxdepth 1 -type d -name 'hyprdt-*' | head -1)"
+    pkg_dir="$(find "$tmp_dir" -maxdepth 1 -type d -name 'hyprsdt-*' | head -1)"
 
     if [[ -z "$pkg_dir" ]]; then
         die "Failed to extract release package"
@@ -159,7 +159,7 @@ install_from_source() {
     fi
 
     log "Building release binary..."
-    if ! cargo build --release --bin hyprdt 2>&1; then
+    if ! cargo build --release --bin hyprsdt 2>&1; then
         die "Build failed"
     fi
     success "Build complete"
@@ -167,21 +167,21 @@ install_from_source() {
     # Compact binary if UPX is available
     if command_exists upx; then
         log "Compacting binary with UPX..."
-        compact_binary "target/release/hyprdt"
+        compact_binary "target/release/hyprsdt"
     fi
 
     # Install binary
-    local src="target/release/hyprdt"
+    local src="target/release/hyprsdt"
     [[ -f "$src" ]] && cp "$src" "$INSTALL_DIR/" || die "Binary not found: $src"
-    chmod +x "${INSTALL_DIR}/hyprdt"
+    chmod +x "${INSTALL_DIR}/hyprsdt"
 }
 
 install_from_package() {
     local pkg_dir="$1"
 
-    local src="${pkg_dir}/bin/hyprdt"
+    local src="${pkg_dir}/bin/hyprsdt"
     [[ -f "$src" ]] && cp "$src" "$INSTALL_DIR/" || die "Binary not found: $src"
-    chmod +x "${INSTALL_DIR}/hyprdt"
+    chmod +x "${INSTALL_DIR}/hyprsdt"
 }
 
 install_from_remote() {
@@ -199,7 +199,7 @@ install_from_remote() {
         die "Could not determine release version"
     fi
 
-    log "Installing hyprdt ${version} for ${arch}"
+    log "Installing hyprsdt ${version} for ${arch}"
 
     local pkg_dir
     pkg_dir="$(download_release "$version" "$arch")"
@@ -256,12 +256,12 @@ main() {
     # PATH check
     if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
         warn "$INSTALL_DIR not in PATH"
-        echo "  Add to config.fish: set -Ua fish_user_paths \$HOME/.local/bin/hypr"
+        echo "  Add to config.fish: set -Ua fish_user_paths \$HOME/.local/bin/hyprs"
     fi
 
     # Show installed version
-    if command_exists "${INSTALL_DIR}/hyprdt"; then
-        log "Installed version: $("${INSTALL_DIR}/hyprdt" --version 2>/dev/null || echo "unknown")"
+    if command_exists "${INSTALL_DIR}/hyprsdt"; then
+        log "Installed version: $("${INSTALL_DIR}/hyprsdt" --version 2>/dev/null || echo "unknown")"
     fi
 }
 
